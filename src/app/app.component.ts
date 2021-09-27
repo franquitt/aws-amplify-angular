@@ -20,7 +20,6 @@ export class AppComponent {
   showMfaFlow = false;
 
   ngOnInit(){
-    console.log("hola")
     Amplify.configure({
       aws_project_region: 'us-west-2', // eslint-disable-line @typescript-eslint/naming-convention
       aws_cognito_region: 'us-west-2', // eslint-disable-line @typescript-eslint/naming-convention
@@ -54,14 +53,7 @@ export class AppComponent {
          
         }
         await this.getDevices();
-        
-        
-        //this.secretCode = await Auth.setupTOTP(this.mfaUser);
-          /*Auth.completeNewPassword(this.mfaUser, '?Aws_Amplify21!').then(user=>{
-          console.log(user)
-        });
-      */
-     alert("Great!")
+        alert("Logged-In!")
     }catch(error: any){
       if(error.code){
         alert(error.code)
@@ -86,5 +78,7 @@ export class AppComponent {
     console.log(result)
     this.mfaUser = null;
     this.showMfaFlow = false;
+    this.mfaDevices = [];
+    this.mfaPin = '';
   }
 }
