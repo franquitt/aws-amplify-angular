@@ -3,34 +3,38 @@
 <p>
   Use the below buttons to try to login with MFA & remember device
   <br /><br />
-  SECRET TOPT MFA CODE: <br />
-  <b>{{secretCode}}</b>
+  At first login your password will be changed to <b>?Aws_Amplify21!</b>
 </p>
 
 <div>
   <form>
-    Username
-    <input type="text" [(ngModel)]="username" name="username">
-    <br>
-    <br>
-    
-    Password
-    <input type="text" [(ngModel)]="password" name="password">
-    <br>
-    <br>
-
-    <ng-container *ngIf="showMfaFlow">
-      MFA Pin code
-      <input type="text" [(ngModel)]="mfaPin" name="mfaPin">
+    <ng-container  *ngIf="!isLoggedIn"
+    >
+      Username
+      <input type="text" [(ngModel)]="username" name="username">
+      <br>
+      <br>
+      
+      Password
+      <input type="text" [(ngModel)]="password" name="password">
       <br>
       <br>
 
-      Remember device?
-      <input type="checkbox" [(ngModel)]="rememberDevice" name="rememberDevice">
-      <br>
-      <br>
+      <ng-container *ngIf="showMfaFlow">
+        MFA Pin code
+        <input type="text" [(ngModel)]="mfaPin" name="mfaPin">
+        <br>
+        <br>
+
+        Remember device?
+        <input type="checkbox" [(ngModel)]="rememberDevice" name="rememberDevice">
+        <br>
+        <br>
+      </ng-container>
+      <button (click)="login()" *ngIf="!showMfaFlow">Login</button>
+
+      <button (click)="verifyLogin()" *ngIf="showMfaFlow">Verify</button>
     </ng-container>
-    <button (click)="login()">Login</button>
     <button (click)="logout()" *ngIf="mfaUser">Logout</button>
   </form>
 </div>
@@ -38,29 +42,47 @@
 <br>
 <br>
 
-<h2>Remembered Devices</h2>
-<button (click)="getDevices()">Refresh remembered devices</button>
+<ng-container *ngIf="showMfaSetupFlow">
+  <h2>MFA SETUP</h2>
+  Secret code {{secretCode}}
+  <br>
+  <br>
+  MFA Pin code
+  <input type="text" [(ngModel)]="mfaPinSetup" name="mfaPinSetup">
+  <br>
+  <br>
+  Remember device?
+  <input type="checkbox" [(ngModel)]="rememberDeviceSetup" name="rememberDeviceSetup">
+  <br>
+  <br>
+  <button (click)="verifyTOPT()">Verify</button>
 
-<button (click)="deleteDevice()">Delete this remembered device</button>
-<div>
-  <table id="devices">
-    <thead>
-      <td>
-        Id
-      </td>
-      <td>
-        Name
-      </td>
-    </thead>
-    <tbody>
-      <tr *ngFor="let device of mfaDevices">
-        <td>{{device.id}}</td>
-        <td>{{device.name}}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+</ng-container>
 
+<ng-container *ngIf="isLoggedIn">
+  <h2>Remembered Devices</h2>
+  <button (click)="getDevices()">Refresh remembered devices</button>
+
+  <button (click)="deleteDevice()">Delete this remembered device</button>
+  <div>
+    <table id="devices">
+      <thead>
+        <td>
+          Id
+        </td>
+        <td>
+          Name
+        </td>
+      </thead>
+      <tbody>
+        <tr *ngFor="let device of mfaDevices">
+          <td>{{device.id}}</td>
+          <td>{{device.name}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-container>
 
 <br>
 <br>
