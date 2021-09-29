@@ -10,7 +10,7 @@ import { Amplify, Auth } from 'aws-amplify';
 export class AppComponent {
 
   title = 'aws-amplify-cognito-authentication';
-  username= 'franco+1@icanotes.com';
+  username= 'franco+2@icanotes.com';
   masterPassword= '?Aws_Amplify21!';
   password = this.masterPassword;
   mfaPin = '';
@@ -46,6 +46,7 @@ export class AppComponent {
           });
           console.log("password reset result", result);
           alert("Password changed!");
+          this.password = this.masterPassword;
           this.logout();
           return;
         }else if(this.mfaUser.challengeName === "SOFTWARE_TOKEN_MFA"){
@@ -86,6 +87,10 @@ export class AppComponent {
       console.log("verifyTOPT result", result);
       result = await Auth.setPreferredMFA(this.mfaUser, 'TOTP');
       console.log("setPreferredMFA result", result);
+      if(this.rememberDeviceSetup){
+        let result = await Auth.rememberDevice();
+        console.log("rememberDeviceSetup", result)
+      }
       this.loggedIn();
       this.showMfaSetupFlow = false;
     }catch(err){
