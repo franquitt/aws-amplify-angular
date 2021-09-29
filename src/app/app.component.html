@@ -35,6 +35,7 @@
 
       <button (click)="verifyLogin()" *ngIf="showMfaFlow">Verify</button>
     </ng-container>
+    <button (click)="resetMFA()" *ngIf="isLoggedIn">ResetMFA</button>
     <button (click)="logout()" *ngIf="mfaUser">Logout</button>
   </form>
 </div>

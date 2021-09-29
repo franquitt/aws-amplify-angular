@@ -10,8 +10,8 @@ import { Amplify, Auth } from 'aws-amplify';
 export class AppComponent {
 
   title = 'aws-amplify-cognito-authentication';
-  username= 'franco+2@icanotes.com';
-  masterPassword= '?Aws_Amplify21!';
+  username = 'franco+2@icanotes.com';
+  masterPassword = '?Aws_Amplify21!';
   password = this.masterPassword;
   mfaPin = '';
   mfaPinSetup = '';
@@ -24,7 +24,7 @@ export class AppComponent {
   showMfaSetupFlow = false;
   isLoggedIn = false;
 
-  ngOnInit(){
+  ngOnInit() {
     Amplify.configure({
       aws_project_region: 'us-west-2', // eslint-disable-line @typescript-eslint/naming-convention
       aws_cognito_region: 'us-west-2', // eslint-disable-line @typescript-eslint/naming-convention
@@ -33,34 +33,34 @@ export class AppComponent {
     });
   }
 
-  public async login(){
-    try{
-        this.showMfaFlow = false;
-        if(!this.mfaUser)
-          this.mfaUser = await Auth.signIn(this.username, this.password);
-        console.log(this.mfaUser);
-        if(this.mfaUser.challengeName === "NEW_PASSWORD_REQUIRED"){
-          const result = await Auth.completeNewPassword(this.mfaUser, this.masterPassword,
-            {
-              name: "franco",
+  public async login() {
+    try {
+      this.showMfaFlow = false;
+      if (!this.mfaUser)
+        this.mfaUser = await Auth.signIn(this.username, this.password);
+      console.log(this.mfaUser);
+      if (this.mfaUser.challengeName === "NEW_PASSWORD_REQUIRED") {
+        const result = await Auth.completeNewPassword(this.mfaUser, this.masterPassword,
+          {
+            name: "franco",
           });
-          console.log("password reset result", result);
-          alert("Password changed!");
-          this.password = this.masterPassword;
-          this.logout();
-          return;
-        }else if(this.mfaUser.challengeName === "SOFTWARE_TOKEN_MFA"){
-          this.showMfaFlow=true;
-          return;         
-        }else if(this.mfaUser.preferredMFA === "NOMFA"){
-          this.mfaSetup();
-          return;         
-        }else{
-          console.log("else with ", this.mfaUser.challengeName)
-          this.loggedIn();
-        }
-    }catch(error: any){
-      if(error.code){
+        console.log("password reset result", result);
+        alert("Password changed!");
+        this.password = this.masterPassword;
+        this.logout();
+        return;
+      } else if (this.mfaUser.challengeName === "SOFTWARE_TOKEN_MFA") {
+        this.showMfaFlow = true;
+        return;
+      } else if (this.mfaUser.preferredMFA === "NOMFA") {
+        this.mfaSetup();
+        return;
+      } else {
+        console.log("else with ", this.mfaUser.challengeName)
+        this.loggedIn();
+      }
+    } catch (error: any) {
+      if (error.code) {
         alert(error.code)
       }
       console.log(error);
@@ -68,18 +68,18 @@ export class AppComponent {
     }
   }
 
-  public async mfaSetup(){
+  public async mfaSetup() {
     this.showMfaSetupFlow = true;
-    try{
+    try {
       this.secretCode = await Auth.setupTOTP(this.mfaUser);
-    }catch(err){
+    } catch (err) {
       console.log("error setting up mfa", err);
     }
   }
 
-  public async verifyTOPT(){
-    try{
-      if(!this.mfaPinSetup){
+  public async verifyTOPT() {
+    try {
+      if (!this.mfaPinSetup) {
         alert('insert pin code')
         return;
       }
@@ -87,28 +87,39 @@ export class AppComponent {
       console.log("verifyTOPT result", result);
       result = await Auth.setPreferredMFA(this.mfaUser, 'TOTP');
       console.log("setPreferredMFA result", result);
-      if(this.rememberDeviceSetup){
+      if (this.rememberDeviceSetup) {
         let result = await Auth.rememberDevice();
         console.log("rememberDeviceSetup", result)
       }
       this.loggedIn();
       this.showMfaSetupFlow = false;
-    }catch(err){
+    } catch (err) {
       console.log("error verifying TOPT", err)
       this.logout();
     }
-    
+
   }
 
-  public async loggedIn(){
-    if(this.mfaUser)
-    await this.getDevices();
+  public async resetMFA() {
+    try {
+      let result = await Auth.setPreferredMFA(this.mfaUser, 'NOMFA');
+      console.log("setPreferredMFA result", result);
+    } catch (err) {
+      console.log("error resetMFA", err)
+
+    }
+    this.logout();
+  }
+
+  public async loggedIn() {
+    if (this.mfaUser)
+      await this.getDevices();
     alert("Logged-In!")
     this.isLoggedIn = true;
   }
 
-  public async verifyLogin(){
-    if(!this.mfaPin){
+  public async verifyLogin() {
+    if (!this.mfaPin) {
       alert('insert pin code')
       return;
     }
@@ -118,24 +129,24 @@ export class AppComponent {
       this.mfaUser.challengeName
     );
     console.log(this.mfaUser);
-    if(this.rememberDevice){
+    if (this.rememberDevice) {
       let result = await Auth.rememberDevice();
       console.log(result)
     }
     this.loggedIn();
   }
-  public async getDevices(){
+  public async getDevices() {
     this.mfaDevices = await Auth.fetchDevices();
     console.log("devices", this.mfaDevices);
   }
-  public async deleteDevice(){
+  public async deleteDevice() {
     console.log("Forget device")
-    let result = await Auth.forgetDevice();    
+    let result = await Auth.forgetDevice();
     console.log(result);
     this.getDevices();
   }
 
-  async logout(){
+  async logout() {
     const result = await Auth.signOut();
     console.log(result)
     this.mfaUser = null;
