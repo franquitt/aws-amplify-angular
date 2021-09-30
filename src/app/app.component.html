@@ -1,10 +1,19 @@
 <h1>Amplify remember device PoC</h1>
 
 <p>
-  Use the below buttons to try to login with MFA & remember device
-  <br /><br />
-  At first login your password will be changed to <b>?Aws_Amplify21!</b>
+  Use the below buttons to try to login with MFA & remember device.
+  
 </p>
+
+<ul>
+  <li>Login with your credentials(the number of the email is between 1 and 30)</li>
+  <li>Setup MFA with <a href="https://totp.danhersam.com/">Some temporary service</a></li>
+  <li>Logout</li>
+  <li>Log-in & remember your device</li>
+  <li>Your device is listed in the devices table</li>
+  <li>Logout</li>
+  <li>Now the problem appears. If you try to login again, you will be asked for a OTP code again although this device is remembered</li>
+</ul>
 
 <div>
   <form>

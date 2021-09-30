@@ -24,6 +24,7 @@ export class AppComponent {
   showMfaSetupFlow = false;
   isLoggedIn = false;
 
+
   ngOnInit() {
     Amplify.configure({
       aws_project_region: 'us-west-2', // eslint-disable-line @typescript-eslint/naming-convention
@@ -32,6 +33,7 @@ export class AppComponent {
       aws_user_pools_web_client_id: '1e591fapeovp5482aucej699gg', // eslint-disable-line @typescript-eslint/naming-convention
     });
   }
+
 
   public async login() {
     try {
@@ -68,6 +70,7 @@ export class AppComponent {
     }
   }
 
+
   public async mfaSetup() {
     this.showMfaSetupFlow = true;
     try {
@@ -76,6 +79,7 @@ export class AppComponent {
       console.log("error setting up mfa", err);
     }
   }
+
 
   public async verifyTOPT() {
     try {
@@ -100,6 +104,7 @@ export class AppComponent {
 
   }
 
+
   public async resetMFA() {
     try {
       let result = await Auth.setPreferredMFA(this.mfaUser, 'NOMFA');
@@ -111,12 +116,14 @@ export class AppComponent {
     this.logout();
   }
 
+
   public async loggedIn() {
     if (this.mfaUser)
       await this.getDevices();
     alert("Logged-In!")
     this.isLoggedIn = true;
   }
+
 
   public async verifyLogin() {
     if (!this.mfaPin) {
@@ -135,16 +142,21 @@ export class AppComponent {
     }
     this.loggedIn();
   }
+
+
   public async getDevices() {
     this.mfaDevices = await Auth.fetchDevices();
     console.log("devices", this.mfaDevices);
   }
+
+
   public async deleteDevice() {
     console.log("Forget device")
     let result = await Auth.forgetDevice();
     console.log(result);
     this.getDevices();
   }
+
 
   async logout() {
     const result = await Auth.signOut();
