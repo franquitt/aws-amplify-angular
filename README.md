@@ -1,6 +1,7 @@
-# AwsAmplifyCognitoAuthentication
+# Aws Amplify Cognito Authentication
+For support purposes
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.0.2.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.0.2 .
 
 ## Development server
 
